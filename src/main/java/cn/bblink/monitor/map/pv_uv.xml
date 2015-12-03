@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="pv_uv">
+    <sql id="pvUvListSql">
+        select t.id as id,t.short_link_url as short_link_url,
+        t.url_pv as url_pv,t.url_uv as url_uv,
+        t.count_date as count_date
+        from link_url_pv_uv t
+        where 1=1
+        <if test="short_link_url != null">
+            and short_link_url = #{short_link_url}
+        </if>
+        <if test="startPublishDate != null">
+            and count_date &gt; #{startPublishDate}
+        </if>
+        <if test="endPublishDate != null">
+            and count_date &lt; #{endPublishDate}
+        </if>
+
+    </sql>
+    <select id="getPvUvList" parameterType="hashmap" resultType="hashmap">
+        <include refid="pvUvListSql"></include>
+    </select>
+    <select id="getPvUvListCount" parameterType="hashmap" resultType="long">
+        select count(1) from (<include refid="pvUvListSql"></include>) t1
+    </select>
+    <update id="updatePu" parameterType="hashmap">
+        update link_url_pv_uv
+        <set>
+            <if test="url_pv != null">
+                url_pv = #{url_pv},
+            </if>
+            <if test="url_uv != null">
+                url_uv = #{url_uv},
+            </if>
+        </set>
+        where 1=1
+        <if test="project_link_url != null">
+            and short_link_url = #{short_link_url}
+        </if>
+        <if test="count_date != null">
+            and count_date = #{count_date}
+        </if>
+    </update>
+    <insert id="insertPu" parameterType="hashmap">
+        insert into link_url_pv_uv(short_link_url,count_date,url_pv,url_uv)
+        values(#{short_link_url},#{count_date},#{url_pv},#{url_uv})
+    </insert>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

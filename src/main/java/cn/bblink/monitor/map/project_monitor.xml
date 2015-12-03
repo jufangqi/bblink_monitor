@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="project_monitor">
+    <sql id="projectMonitorListSql">
+       select t.id as id,t.project_name as project_name,t.project_description as project_description,
+        t.project_status as project_status,t.project_arrive_url as project_arrive_url,
+        t.third_party_monitor_url as third_party_monitor_url,t.create_time as create_time,t.short_link_url as short_link_url
+        from project_monitor as t
+        where 1=1
+        <if test="project_name != null">
+            and project_name = #{project_name}
+        </if>
+        <if test="project_status != null">
+            and project_status = #{project_status}
+        </if>
+        <if test="startPublishDate != null">
+            and create_time &gt; #{startPublishDate}
+        </if>
+        <if test="endPublishDate != null">
+            and create_time &lt; #{endPublishDate}
+        </if>
+        <if test="id != null">
+            and id = #{id}
+        </if>
+        order by id desc
+    </sql>
+    <select id="getProjectMonitorList" parameterType="hashmap" resultType="hashmap">
+        <include refid="projectMonitorListSql"></include>
+    </select>
+    <select id="getProjectMonitorListCount" parameterType="hashmap" resultType="long">
+        select count(1) from (<include refid="projectMonitorListSql"></include>) t1
+    </select>
+    <insert id="insertMonitorProject" parameterType="hashmap">
+        insert into project_monitor(project_name,project_description,
+        project_status,project_arrive_url,third_party_monitor_url,short_link_url,create_time)
+        values(#{project_name},#{project_description},
+        #{project_status},#{project_arrive_url},#{third_party_monitor_url},#{short_link_url},#{create_time})
+    </insert>
+    <update id="updateMonitorProject" parameterType="hashmap">
+        update project_monitor
+        <set>
+           <if test="project_name != null">
+               project_name = #{project_name},
+           </if>
+           <if test="project_description != null">
+               project_description = #{project_description},
+           </if>
+            <if test="project_status != null">
+                project_status = #{project_status},
+            </if>
+            <if test="project_arrive_url != null">
+                project_arrive_url = #{project_arrive_url},
+            </if>
+            <if test="third_party_monitor_url != null">
+                third_party_monitor_url = #{third_party_monitor_url},
+            </if>
+            <if test="short_link_url != null">
+                short_link_url = #{short_link_url},
+            </if>
+            <if test="create_time != null">
+                create_time = #{create_time},
+            </if>
+        </set>
+        where 1=1
+        <if test="id != null">
+            and id = #{id}
+        </if>
+    </update>
+    <select id="getMonitorById" parameterType="hashmap" resultType="hashmap">
+        <include refid="projectMonitorListSql"></include>
+    </select>
+
+    <select id="getMonitorByLinkUrl" parameterType="hashmap" resultType="hashmap">
+        select * from project_monitor where short_link_url = #{short_link_url}
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
